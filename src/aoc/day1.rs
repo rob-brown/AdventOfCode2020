@@ -3,13 +3,11 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 
 pub fn solve() {
-    let mut input = Vec::new();
-
     let file = File::open("input/day1.txt").unwrap();
-    for line in BufReader::new(file).lines() {
-        let number = String::from(line.unwrap()).parse::<i32>().unwrap();
-        input.push(number)
-    }
+    let input: Vec<i32> = BufReader::new(file)
+        .lines()
+        .map(|x| x.unwrap().parse::<i32>().unwrap())
+        .collect();
 
     'outer: for x in input.iter() {
         for y in input.iter() {
