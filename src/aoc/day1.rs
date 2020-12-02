@@ -19,8 +19,7 @@ pub fn solve() {
 
             if remainder < 0 {
                 continue;
-            }
-            else if remainder == 0 {
+            } else if remainder == 0 {
                 assert_eq(Day::new(1, Part::A), 646_779, x * y);
                 continue;
             }

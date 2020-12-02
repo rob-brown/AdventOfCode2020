@@ -14,7 +14,7 @@ where
 
 fn solve_all() {
     time(aoc::day1::solve);
-    // time(aoc::day2::solve);
+    time(aoc::day2::solve);
     // time(aoc::day3::solve);
     // time(aoc::day4::solve);
     // time(aoc::day5::solve);
