@@ -1,37 +1,38 @@
 use super::assert::*;
-use regex::Regex;
 use std::fs::File;
-use std::io::prelude::*;
+use std::io::{BufRead, BufReader};
+use parse_display::{Display as PDisplay, FromStr as PFromStr};
+
+#[derive(PDisplay, PFromStr, Debug)]
+#[display("{min}-{max} {char}: {password}")]
+struct PasswordRule {
+  min: usize,
+  max: usize,
+  char: char,
+  password: String,
+}
 
 pub fn solve() {
-    let regex = Regex::new(r"(\d{1,2})-(\d{1,2}) (\w): (\w+)\n").unwrap();
-    let mut file = File::open("input/day2.txt").unwrap();
-    let mut contents = String::new();
-    file.read_to_string(&mut contents).unwrap();
+    let file = File::open("input/day2.txt").unwrap();
 
     let mut first_rule_count = 0;
     let mut second_rule_count = 0;
 
-    for capture in regex.captures_iter(&contents) {
-        let min = capture[1].parse::<usize>().unwrap();
-        let max = capture[2].parse::<usize>().unwrap();
-        let char = capture[3].parse::<String>().unwrap();
-        let password = capture[4].parse::<String>().unwrap();
+    for line in BufReader::new(file).lines() {
+        let rule = line.unwrap().parse::<PasswordRule>().unwrap();
 
         // Check first password rule.
-        let matches = password.matches(&char).count();
+        let matches = rule.password.chars().filter(|x| *x == rule.char).count();
 
-        if matches >= min && matches <= max {
+        if matches >= rule.min && matches <= rule.max {
             first_rule_count += 1;
         }
 
         // Check second password rule.
-        let first: String = password.chars().skip(min - 1).take(1).collect();
-        let second: String = password.chars().skip(max - 1).take(1).collect();
+        let first = rule.password.chars().nth(rule.min - 1);
+        let second = rule.password.chars().nth(rule.max - 1);
 
-        if first == char && second != char {
-            second_rule_count += 1;
-        } else if first != char && second == char {
+        if (first == Some(rule.char)) ^ (second == Some(rule.char)) {
             second_rule_count += 1;
         }
     }
