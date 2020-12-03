@@ -32,7 +32,7 @@ pub fn solve() {
         height += 1;
         width = 0;
 
-        for (x, char) in String::from(line.unwrap()).chars().enumerate() {
+        for (x, char) in line.unwrap().chars().enumerate() {
             width += 1;
 
             if char == '#' {
