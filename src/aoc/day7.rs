@@ -24,26 +24,14 @@ struct Output {
     bag: String,
 }
 
-impl Output {
-    fn output_has(&self, bag: &str) -> bool {
-        self.bag == bag
-    }
-}
-
 #[derive(Clone, Debug)]
 struct Rule {
     input: String,
     outputs: Vec<Output>,
 }
 
-impl Rule {
-    fn output_has(&self, bag: &str) -> bool {
-        self.outputs.iter().filter(|o| o.output_has(bag)).count() > 0
-    }
-}
-
 pub fn solve() {
-    let mut file = File::open("input/day7.txt").unwrap();
+    let file = File::open("input/day7.txt").unwrap();
     let mut rules = Vec::new();
     let mut map: HashMap<String, HashSet<String>> = HashMap::new();
 
@@ -60,7 +48,7 @@ pub fn solve() {
             } else {
                 let quantity = raw.quantity.parse::<i32>().unwrap();
                 let bag = raw.bag;
-                let mut entry = map.entry(bag.clone()).or_insert(HashSet::new());
+                let entry = map.entry(bag.clone()).or_insert(HashSet::new());
                 entry.insert(input.bag.clone());
                 let output = Output { quantity, bag };
                 outputs.push(output);
