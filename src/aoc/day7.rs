@@ -1,8 +1,8 @@
 use super::assert::*;
+use parse_display::{Display as PDisplay, FromStr as PFromStr};
+use std::collections::{HashMap, HashSet};
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use parse_display::{Display as PDisplay, FromStr as PFromStr};
-use std::collections::{HashSet, HashMap};
 
 #[derive(PDisplay, PFromStr, Debug)]
 #[display("{bag} bags contain {rest}.")]
@@ -48,7 +48,6 @@ pub fn solve() {
     let mut map: HashMap<String, HashSet<String>> = HashMap::new();
 
     for line in BufReader::new(file).lines() {
-
         let line = line.unwrap();
         let input = line.parse::<RawInput>().unwrap();
         let mut outputs = Vec::new();
@@ -63,12 +62,15 @@ pub fn solve() {
                 let bag = raw.bag;
                 let mut entry = map.entry(bag.clone()).or_insert(HashSet::new());
                 entry.insert(input.bag.clone());
-                let output = Output {quantity, bag};
+                let output = Output { quantity, bag };
                 outputs.push(output);
             }
         }
 
-        let rule = Rule {input: input.bag, outputs};
+        let rule = Rule {
+            input: input.bag,
+            outputs,
+        };
         rules.push(rule);
     }
 
@@ -80,16 +82,13 @@ pub fn solve() {
 
         for e in current_entries {
             if let Some(options) = map.get(&e) {
-
                 for o in options {
-
                     if !all_entries.contains(o) {
                         new_entries.insert(o.clone());
                         all_entries.insert(o.clone());
                     }
                 }
             }
-
         }
 
         if new_entries.is_empty() {

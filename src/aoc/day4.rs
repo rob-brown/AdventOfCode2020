@@ -1,13 +1,13 @@
 use super::assert::*;
+use parse_display::{Display as PDisplay, FromStr as PFromStr};
 use std::fs::File;
 use std::io::prelude::*;
-use parse_display::{Display as PDisplay, FromStr as PFromStr};
 
 #[derive(PDisplay, PFromStr, Debug)]
 #[display("{key}:{value}")]
 struct Pair {
-  key: String,
-  value: String,
+    key: String,
+    value: String,
 }
 
 fn validate_byr(value: &str) -> bool {
@@ -37,9 +37,7 @@ fn validate_hgt(value: &str) -> bool {
             let magnitude = (&value[..(value.len() - 2)]).parse::<i32>().unwrap();
             magnitude >= 150 && magnitude <= 193
         }
-        _ => {
-            false
-        }
+        _ => false,
     }
 }
 
@@ -68,7 +66,7 @@ pub fn solve() {
     let mut keys_valid = 0;
     let mut values_valid = 0;
 
-    for passport in contents.split("\n\n"){
+    for passport in contents.split("\n\n") {
         let mut byr = false;
         let mut iyr = false;
         let mut eyr = false;

@@ -1,7 +1,7 @@
 use super::assert::*;
+use std::collections::HashSet;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use std::collections::HashSet;
 
 type Point = (i32, i32);
 
@@ -49,5 +49,9 @@ pub fn solve() {
     let count5 = trees_hit(&trees, width, height, 1, 2);
 
     assert_eq(Day::new(3, Part::A), 178, count2);
-    assert_eq(Day::new(3, Part::B), 3_492_520_200, count1 * count2 * count3 * count4 * count5);
+    assert_eq(
+        Day::new(3, Part::B),
+        3_492_520_200,
+        count1 * count2 * count3 * count4 * count5,
+    );
 }

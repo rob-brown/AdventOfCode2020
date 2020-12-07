@@ -1,7 +1,7 @@
 use super::assert::*;
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::prelude::*;
-use std::collections::HashMap;
 
 pub fn solve() {
     let mut file = File::open("input/day6.txt").unwrap();
@@ -16,7 +16,6 @@ pub fn solve() {
         let mut group_size = 0;
 
         for entry in group.split_whitespace() {
-
             for c in entry.chars() {
                 let count = map.entry(c).or_insert(0);
                 *count += 1;
@@ -25,10 +24,7 @@ pub fn solve() {
             group_size += 1;
         }
 
-        let all_count = map
-            .iter()
-            .filter(|(_, c)| **c == group_size)
-            .count();
+        let all_count = map.iter().filter(|(_, c)| **c == group_size).count();
         all_sum += all_count;
         any_sum += map.len();
     }

@@ -1,15 +1,15 @@
 use super::assert::*;
+use parse_display::{Display as PDisplay, FromStr as PFromStr};
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use parse_display::{Display as PDisplay, FromStr as PFromStr};
 
 #[derive(PDisplay, PFromStr, Debug)]
 #[display("{min}-{max} {char}: {password}")]
 struct PasswordRule {
-  min: usize,
-  max: usize,
-  char: char,
-  password: String,
+    min: usize,
+    max: usize,
+    char: char,
+    password: String,
 }
 
 pub fn solve() {

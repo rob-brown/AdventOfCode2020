@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 
 fn midpoint(lo: usize, hi: usize) -> usize {
-	(hi - lo) / 2 + lo
+    (hi - lo) / 2 + lo
 }
 
 fn find_seat(line: &str) -> usize {
