@@ -27,15 +27,54 @@ struct Output {
     bag: RcString,
 }
 
-#[derive(Clone, Debug)]
-struct Rule {
-    input: RcString,
-    outputs: Vec<Output>,
+fn bags_contained(current: &RcString, rules: &HashMap<RcString, Vec<Output>>) -> i32 {
+    rules
+        .get(current)
+        .unwrap_or(&vec![])
+        .iter()
+        .map(|x| x.quantity * (1 + bags_contained(&x.bag, rules)))
+        .sum()
+}
+
+fn part1(reverse_rules: &HashMap<RcString, HashSet<RcString>>) {
+    let shiny_gold = Rc::new(String::from("shiny gold"));
+    let mut all_entries: HashSet<RcString> = reverse_rules.get(&shiny_gold).unwrap().clone();
+    let mut current_entries = all_entries.clone();
+    let empty = HashSet::new();
+
+    loop {
+        let mut new_entries = HashSet::new();
+
+        for entry in current_entries {
+            let options = reverse_rules
+                .get(&entry)
+                .unwrap_or(&empty)
+                .iter()
+                .cloned();
+            new_entries.extend(options);
+        }
+
+        if new_entries.is_empty() {
+            break;
+        } else {
+            all_entries.extend(new_entries.iter().cloned());
+            current_entries = new_entries;
+        }
+    }
+
+    assert_eq(Day::new(7, Part::A), 169, all_entries.len());
+}
+
+fn part2(rules: &HashMap<RcString, Vec<Output>>) {
+    let shiny_gold = Rc::new(String::from("shiny gold"));
+    let count = bags_contained(&shiny_gold, rules);
+
+    assert_eq(Day::new(7, Part::B), 82_372, count);
 }
 
 pub fn solve() {
     let file = File::open("input/day7.txt").unwrap();
-    let mut rules = Vec::new();
+    let mut rules: HashMap<RcString, Vec<Output>> = HashMap::new();
     let mut reverse_rules: HashMap<RcString, HashSet<RcString>> = HashMap::new();
 
     for line in BufReader::new(file).lines() {
@@ -44,8 +83,8 @@ pub fn solve() {
         let input = Rc::new(raw_input.bag);
         let mut outputs = Vec::new();
 
-        for o in raw_input.rest.split(", ") {
-            let raw_output = o.parse::<RawOutput>().unwrap();
+        for text in raw_input.rest.split(", ") {
+            let raw_output = text.parse::<RawOutput>().unwrap();
 
             if raw_output.quantity == "no" {
                 continue;
@@ -61,32 +100,9 @@ pub fn solve() {
             }
         }
 
-        let rule = Rule { input, outputs };
-        rules.push(rule);
+        rules.insert(input, outputs);
     }
 
-    let shiny_gold = Rc::new("shiny gold".to_owned());
-    let mut all_entries: HashSet<RcString> = reverse_rules.get(&shiny_gold).unwrap().clone();
-    let mut current_entries = all_entries.clone();
-
-    loop {
-        let mut new_entries = HashSet::new();
-
-        for entry in current_entries {
-            if let Some(options) = reverse_rules.get(&entry) {
-                for option in options {
-                    new_entries.insert(option.clone());
-                }
-            }
-        }
-
-        if new_entries.is_empty() {
-            break;
-        } else {
-            all_entries.extend(new_entries.iter().cloned());
-            current_entries = new_entries;
-        }
-    }
-
-    assert_eq(Day::new(7, Part::A), 169, all_entries.len());
+    part1(&reverse_rules);
+    part2(&rules);
 }
