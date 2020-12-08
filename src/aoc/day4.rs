@@ -48,7 +48,7 @@ fn validate_hcl(value: &str) -> bool {
     prefix == "#" && rest.len() == 6
 }
 
-const EYE_COLORS: [&'static str; 7] = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"];
+const EYE_COLORS: [&str; 7] = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"];
 
 fn validate_ecl(value: &str) -> bool {
     EYE_COLORS.contains(&value)

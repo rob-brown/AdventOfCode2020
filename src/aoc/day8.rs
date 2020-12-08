@@ -52,10 +52,10 @@ impl Machine {
     }
 }
 
-fn part1(ops: &Vec<Operation>) {
+fn part1(ops: &[Operation]) {
     // Run until any instruction repeated.
     let mut instructions_run = HashSet::new();
-    let mut machine = Machine::new(ops.clone());
+    let mut machine = Machine::new(ops.to_owned());
 
     loop {
         if instructions_run.contains(&machine.pc) {
@@ -68,10 +68,10 @@ fn part1(ops: &Vec<Operation>) {
     }
 }
 
-fn part2(ops: &Vec<Operation>) {
+fn part2(ops: &[Operation]) {
     // Modify a single instruction until the corrupted one is found.
     'outer: for n in 0..ops.len() {
-        let mut modified_ops = ops.clone();
+        let mut modified_ops = ops.to_owned();
         let op = modified_ops.get_mut(n).unwrap();
 
         // An acc op was NOT corrupted.

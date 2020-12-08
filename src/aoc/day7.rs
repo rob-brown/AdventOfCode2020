@@ -40,14 +40,14 @@ fn part1(reverse_rules: &HashMap<RcString, HashSet<RcString>>) {
     let shiny_gold = Rc::new(String::from("shiny gold"));
     let mut all_entries: HashSet<RcString> = reverse_rules.get(&shiny_gold).unwrap().clone();
     let mut current_entries = all_entries.clone();
-    let empty = HashSet::new();
 
     loop {
         let mut new_entries = HashSet::new();
 
         for entry in current_entries {
-            let options = reverse_rules.get(&entry).unwrap_or(&empty).iter().cloned();
-            new_entries.extend(options);
+            if let Some(options) = reverse_rules.get(&entry) {
+                new_entries.extend(options.iter().cloned());
+            }
         }
 
         if new_entries.is_empty() {
@@ -89,7 +89,7 @@ pub fn solve() {
                 let bag = Rc::new(raw_output.bag);
                 reverse_rules
                     .entry(bag.clone())
-                    .or_insert(HashSet::new())
+                    .or_insert_with(HashSet::new)
                     .insert(input.clone());
                 let output = Output { quantity, bag };
                 outputs.push(output);

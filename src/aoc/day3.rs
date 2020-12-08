@@ -16,7 +16,7 @@ fn trees_hit(trees: &HashSet<Point>, width: i32, height: i32, dx: i32, dy: i32) 
         }
 
         x = (x + dx) % width;
-        y = y + dy;
+        y += dy;
     }
 
     tree_count
