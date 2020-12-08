@@ -46,11 +46,7 @@ fn part1(reverse_rules: &HashMap<RcString, HashSet<RcString>>) {
         let mut new_entries = HashSet::new();
 
         for entry in current_entries {
-            let options = reverse_rules
-                .get(&entry)
-                .unwrap_or(&empty)
-                .iter()
-                .cloned();
+            let options = reverse_rules.get(&entry).unwrap_or(&empty).iter().cloned();
             new_entries.extend(options);
         }
 
