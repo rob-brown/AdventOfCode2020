@@ -4,6 +4,24 @@ use std::collections::HashSet;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
+#[derive(Debug, Clone)]
+enum OpCode {
+    Nop,
+    Acc,
+    Jmp,
+}
+
+impl OpCode {
+    fn parse(string: &str) -> Option<OpCode> {
+        match string {
+            "nop" => Some(OpCode::Nop),
+            "acc" => Some(OpCode::Acc),
+            "jmp" => Some(OpCode::Jmp),
+            _ => None,
+        }
+    }
+}
+
 #[derive(PFromStr, PartialEq, Debug)]
 #[from_str(regex = "(?P<instruction>.*) (?P<sign>\\+|-)(?P<value>\\d+)")]
 struct RawOperation {
@@ -14,7 +32,7 @@ struct RawOperation {
 
 #[derive(Debug, Clone)]
 struct Operation {
-    instruction: String,
+    instruction: OpCode,
     value: i32,
 }
 
@@ -35,15 +53,14 @@ impl Machine {
         let op = &self.ops[self.pc];
         self.pc += 1;
 
-        match &*op.instruction {
-            "acc" => {
+        match op.instruction {
+            OpCode::Acc => {
                 self.acc += op.value;
             }
-            "jmp" => {
+            OpCode::Jmp => {
                 self.pc += op.value as usize - 1;
             }
-            "nop" => (),
-            _ => panic!(),
+            OpCode::Nop => (),
         }
     }
 
@@ -74,16 +91,10 @@ fn part2(ops: &[Operation]) {
         let mut modified_ops = ops.to_owned();
         let op = modified_ops.get_mut(n).unwrap();
 
-        // An acc op was NOT corrupted.
-        if op.instruction == "acc" {
-            continue;
-        }
-
-        // Modify the instruction.
-        if op.instruction == "jmp" {
-            op.instruction = String::from("nop")
-        } else {
-            op.instruction = String::from("jmp")
+        match op.instruction {
+            OpCode::Acc => continue,
+            OpCode::Jmp => op.instruction = OpCode::Nop,
+            OpCode::Nop => op.instruction = OpCode::Jmp,
         }
 
         let mut machine = Machine::new(modified_ops);
@@ -117,7 +128,7 @@ pub fn solve() {
         let raw = line.unwrap().parse::<RawOperation>().unwrap();
 
         let mut op = Operation {
-            instruction: raw.instruction,
+            instruction: OpCode::parse(&raw.instruction).unwrap(),
             value: raw.value,
         };
 
