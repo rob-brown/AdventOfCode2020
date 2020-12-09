@@ -69,7 +69,7 @@ impl Machine {
     }
 }
 
-fn part1(ops: &[Operation]) {
+fn part1(ops: &[Operation]) -> HashSet<usize> {
     // Run until any instruction repeated.
     let mut instructions_run = HashSet::new();
     let mut machine = Machine::new(ops.to_owned());
@@ -83,11 +83,14 @@ fn part1(ops: &[Operation]) {
         instructions_run.insert(machine.pc);
         machine.step();
     }
+
+    instructions_run
 }
 
-fn part2(ops: &[Operation]) {
+fn part2(ops: &[Operation], instructions_run: &HashSet<usize>) {
     // Modify a single instruction until the corrupted one is found.
-    'outer: for n in 0..ops.len() {
+    // Optimize by only checking the instructions before the first loop.
+    'outer: for &n in instructions_run {
         let mut modified_ops = ops.to_owned();
         let op = modified_ops.get_mut(n).unwrap();
 
@@ -138,6 +141,6 @@ pub fn solve() {
         ops.push(op);
     }
 
-    part1(&ops);
-    part2(&ops);
+    let instructions_run = part1(&ops);
+    part2(&ops, &instructions_run);
 }
