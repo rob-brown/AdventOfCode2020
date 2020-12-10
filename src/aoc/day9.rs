@@ -51,9 +51,9 @@ pub fn solve() {
 
         if numbers.len() == 25 {
             if !can_sum(&numbers, number) {
-                assert_eq(Day::new(9, Part::A), 542529149, number);
+                assert_eq(Day::new(9, Part::A), 542_529_149, number);
                 let weakness = find_weakness(&all_numbers, number);
-                assert_eq(Day::new(9, Part::B), 75678618, weakness);
+                assert_eq(Day::new(9, Part::B), 75_678_618, weakness);
                 break;
             }
             numbers.pop_front();
