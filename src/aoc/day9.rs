@@ -1,8 +1,8 @@
 use super::assert::*;
+use std::cmp::Ordering;
+use std::collections::VecDeque;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use std::collections::VecDeque;
-use std::cmp::Ordering;
 
 fn can_sum(numbers: &VecDeque<usize>, target: usize) -> bool {
     for x in numbers.iter() {
@@ -10,7 +10,7 @@ fn can_sum(numbers: &VecDeque<usize>, target: usize) -> bool {
             if x == y {
                 continue;
             } else if x + y == target {
-                return true
+                return true;
             }
         }
     }

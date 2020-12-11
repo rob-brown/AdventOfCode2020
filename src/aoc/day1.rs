@@ -1,7 +1,7 @@
 use super::assert::*;
+use std::cmp::{Ordering, Reverse};
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use std::cmp::{Reverse, Ordering};
 
 pub fn solve() {
     let file = File::open("input/day1.txt").unwrap();
