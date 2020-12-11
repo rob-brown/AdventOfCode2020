@@ -4,6 +4,18 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 
 type Point = (i32, i32);
+type Vector = (i32, i32);
+
+const VECTORS: [Vector; 8] = [
+    (-1, -1),
+    (-1, 0),
+    (0, -1),
+    (1, -1),
+    (-1, 1),
+    (1, 0),
+    (0, 1),
+    (1, 1),
+];
 
 #[derive(PartialEq, Eq, Debug, Clone)]
 enum Occupancy {
@@ -23,20 +35,14 @@ fn too_many_neighbors(positions: &HashMap<Point, Occupancy>, point: Point, limit
     let mut count = 0;
     let (x, y) = point;
 
-    for dy in -1..=1 {
-        for dx in -1..=1 {
-            if dy == 0 && dx == 0 {
-                continue;
-            }
+    for &(dx, dy) in VECTORS.iter() {
+        let p = (x + dx, y + dy);
 
-            let p = (x + dx, y + dy);
+        if let Some(Occupancy::Filled) = positions.get(&p) {
+            count += 1;
 
-            if let Some(Occupancy::Filled) = positions.get(&p) {
-                count += 1;
-
-                if count >= limit {
-                    return true;
-                }
+            if count >= limit {
+                return true;
             }
         }
     }
@@ -51,32 +57,26 @@ fn too_many_extended_neighbors(
 ) -> bool {
     let mut count = 0;
 
-    for dy in -1..=1 {
-        for dx in -1..=1 {
-            if dy == 0 && dx == 0 {
-                continue;
-            }
+    for &(dx, dy) in VECTORS.iter() {
+        let mut p = point;
 
-            let mut p = point;
+        loop {
+            p = (p.0 + dx, p.1 + dy);
 
-            loop {
-                p = (p.0 + dx, p.1 + dy);
+            match positions.get(&p) {
+                Some(Occupancy::Floor) => continue,
+                Some(Occupancy::Filled) => {
+                    count += 1;
 
-                match positions.get(&p) {
-                    Some(Occupancy::Floor) => continue,
-                    Some(Occupancy::Filled) => {
-                        count += 1;
-
-                        if count >= limit {
-                            return true;
-                        }
+                    if count >= limit {
+                        return true;
                     }
-                    Some(Occupancy::Empty) => (),
-                    None => (),
                 }
-
-                break;
+                Some(Occupancy::Empty) => (),
+                None => (),
             }
+
+            break;
         }
     }
 
@@ -95,7 +95,9 @@ pub fn solve() {
                     positions.insert(point, Occupancy::Floor);
                 }
                 'L' => {
-                    positions.insert(point, Occupancy::Empty);
+                    // Mark the seats as filled.
+                    // Saves one iteration.
+                    positions.insert(point, Occupancy::Filled);
                 }
                 _ => (),
             }
