@@ -19,7 +19,7 @@ fn occupancy(positions: &HashMap<Point, Occupancy>) -> usize {
         .count()
 }
 
-fn neighbor_count(positions: &HashMap<Point, Occupancy>, point: Point) -> usize {
+fn too_many_neighbors(positions: &HashMap<Point, Occupancy>, point: Point, limit: usize) -> bool {
     let mut count = 0;
     let (x, y) = point;
 
@@ -34,15 +34,23 @@ fn neighbor_count(positions: &HashMap<Point, Occupancy>, point: Point) -> usize 
             if let Some(state) = positions.get(&p) {
                 if *state == Occupancy::Filled {
                     count += 1;
+
+                    if count >= limit {
+                        return true;
+                    }
                 }
             }
         }
     }
 
-    count
+    false
 }
 
-fn extended_neighbor_count(positions: &HashMap<Point, Occupancy>, point: Point) -> usize {
+fn too_many_extended_neighbors(
+    positions: &HashMap<Point, Occupancy>,
+    point: Point,
+    limit: usize,
+) -> bool {
     let mut count = 0;
 
     for dy in -1..=1 {
@@ -57,16 +65,23 @@ fn extended_neighbor_count(positions: &HashMap<Point, Occupancy>, point: Point) 
                 p = (p.0 + dx, p.1 + dy);
                 match positions.get(&p) {
                     Some(Occupancy::Floor) => continue,
-                    Some(Occupancy::Filled) => count += 1,
+                    Some(Occupancy::Filled) => {
+                        count += 1;
+
+                        if count >= limit {
+                            return true;
+                        }
+                    }
                     Some(Occupancy::Empty) => (),
                     None => (),
                 }
+
                 break;
             }
         }
     }
 
-    count
+    false
 }
 
 pub fn solve() {
@@ -99,13 +114,13 @@ pub fn solve() {
             match state {
                 Occupancy::Floor => (),
                 Occupancy::Empty => {
-                    if neighbor_count(&previous_positions, point) == 0 {
+                    if !too_many_neighbors(&previous_positions, point, 1) {
                         toggle_count += 1;
                         new_positions.insert(point, Occupancy::Filled);
                     }
                 }
                 Occupancy::Filled => {
-                    if neighbor_count(&previous_positions, point) >= 4 {
+                    if too_many_neighbors(&previous_positions, point, 4) {
                         toggle_count += 1;
                         new_positions.insert(point, Occupancy::Empty);
                     }
@@ -132,13 +147,13 @@ pub fn solve() {
             match state {
                 Occupancy::Floor => (),
                 Occupancy::Empty => {
-                    if extended_neighbor_count(&previous_positions, point) == 0 {
+                    if !too_many_extended_neighbors(&previous_positions, point, 1) {
                         toggle_count += 1;
                         new_positions.insert(point, Occupancy::Filled);
                     }
                 }
                 Occupancy::Filled => {
-                    if extended_neighbor_count(&previous_positions, point) >= 5 {
+                    if too_many_extended_neighbors(&previous_positions, point, 5) {
                         toggle_count += 1;
                         new_positions.insert(point, Occupancy::Empty);
                     }
