@@ -31,13 +31,11 @@ fn too_many_neighbors(positions: &HashMap<Point, Occupancy>, point: Point, limit
 
             let p = (x + dx, y + dy);
 
-            if let Some(state) = positions.get(&p) {
-                if *state == Occupancy::Filled {
-                    count += 1;
+            if let Some(Occupancy::Filled) = positions.get(&p) {
+                count += 1;
 
-                    if count >= limit {
-                        return true;
-                    }
+                if count >= limit {
+                    return true;
                 }
             }
         }
@@ -63,6 +61,7 @@ fn too_many_extended_neighbors(
 
             loop {
                 p = (p.0 + dx, p.1 + dy);
+
                 match positions.get(&p) {
                     Some(Occupancy::Floor) => continue,
                     Some(Occupancy::Filled) => {
