@@ -100,11 +100,9 @@ fn part1(instructions: &[Instruction]) {
         }
     }
 
-    assert_eq(
-        Day::new(12, Part::A),
-        1601,
-        position.0.abs() + position.1.abs(),
-    );
+    let distance = position.0.abs() + position.1.abs();
+
+    assert_eq(Day::new(12, Part::A), 1601, distance);
 }
 
 fn part2(instructions: &[Instruction]) {
@@ -117,11 +115,9 @@ fn part2(instructions: &[Instruction]) {
         waypoint = new_waypoint;
     }
 
-    assert_eq(
-        Day::new(12, Part::B),
-        13_340,
-        position.0.abs() + position.1.abs(),
-    );
+    let distance = position.0.abs() + position.1.abs();
+
+    assert_eq(Day::new(12, Part::B), 13_340, distance);
 }
 
 pub fn solve() {
