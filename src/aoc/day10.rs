@@ -14,7 +14,7 @@ pub fn solve() {
         max = max.max(n);
     }
 
-    all_numbers.sort();
+    all_numbers.sort_unstable();
 
     // Add in the final device.
     all_numbers.push(max + 3);

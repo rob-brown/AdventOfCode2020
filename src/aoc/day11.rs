@@ -138,12 +138,12 @@ fn print_grid(grid: &[Occupancy]) {
     println!("=======");
 }
 
-fn simulate<F>(seats: &Vec<Seat>, spaces: &[Occupancy; SIZE], limit: usize, fun: F) -> usize
+fn simulate<F>(seats: &[Seat], spaces: &[Occupancy; SIZE], limit: usize, fun: F) -> usize
 where
     F: Fn(&Seat, &[Occupancy]) -> usize,
 {
-    let mut current = spaces.clone();
-    let mut next = spaces.clone();
+    let mut current = *spaces;
+    let mut next = *spaces;
 
     loop {
         // print_grid(&current);
